@@ -1,0 +1,123 @@
+<html>
+	<script>
+		const arr = [ 
+		    [0,0,0,0,0,0,0,0,0],
+		    [0,0,0,0,0,0,0,0,0],
+		    [0,0,0,0,0,0,0,0,0],
+		    [0,0,0,0,0,0,0,0,0],
+		    [0,0,0,0,0,0,0,0,0],
+		    [0,0,0,0,0,0,0,0,0],
+		    [0,0,0,0,0,0,0,0,0],
+		    [0,0,0,0,0,0,0,0,0],
+		    [0,0,0,0,0,0,0,0,0] 
+		  ];
+	</script>
+	<head>
+  		<title>Sudoku Solver</title>
+	</head>
+	<body>
+	  <h1>Sudoku Solver</h1>
+	  <div id="puzzle"></div>
+	  <button type="button" onclick="start(arr)">Solve</button>
+	</body>
+
+	<script>
+		document.body.onload = loadSudokuSolver;
+
+		function loadSudokuSolver() {
+			//build the sudoku board
+			for(let i = 0; i < 9; i++) {
+				for(let j = 0; j < 9; j++) {
+					//create a row of inputs with the value of zero
+					document.getElementById("puzzle").innerHTML += `<input id="${i}-${j}" value="0">`;
+				}
+				//we have reached the end of the row and need to format for the next row
+				document.getElementById("puzzle").innerHTML += `<br>`;
+			}
+		}
+
+		function start(arr) {
+			for(let i = 0; i < 9; i++) {
+		    	for(let j = 0; j < 9; j++) {
+		    		//pull the value from each of the html input elements provided by the user interface and build a 2-D array
+		      		arr[i][j] = document.getElementById(`${i}-${j}`).value;
+		    	}
+		  	}
+		  	solve(arr);
+		}
+
+		function solve(arr) {
+			//console.log(arr);
+
+			for(let i = 0; i < 9; i++) {
+				for(let j = 0; j < 9; j++) {
+					if(arr[i][j] === '0') {
+						let num = '1';
+						while(num < 10) {
+							if(checkSolution(i, j, num)) {
+								//set the cell to num since it is a valid solution for our puzzle
+								arr[i][j] = num;
+								if(solve(arr)) return true;
+								else arr[i][j] = '0';
+							}
+							num = (parseInt(num) + 1).toString();
+						}
+						return false;	
+					}
+				}
+			}
+			for(let i = 0; i < 9; i++) {
+				for(let j = 0; j < 9; j++) {
+					//we have a valid solution store in our array so now we need to populate the html input elements on the screen!!
+					document.getElementById(`${i}-${j}`).value = arr[i][j];
+				}
+			}
+			return true;
+		}
+
+		function checkSolution(i, j, k) {
+			if(arr[i].includes(k)) {
+				//if the row already includes the target value k, then it is not part of the solution
+				return false;
+			}
+
+			
+			for(let x = 0; x < 9; x++) {
+				if(arr[x][j] === k) {
+					//if the column already includes the target value k, then it is not part of the solution
+			  		return false;
+		  		}
+			}
+
+			//x and y will only ever be 0, 3, or 6 which gets us to the beginning (top left) of each 3x3 square 
+			let x = Math.floor(i / 3) * 3;
+			let y = Math.floor(j / 3) * 3;
+
+			for (let row = 0; row < 3; row++) {
+				for (let col = 0; col < 3; col++) {
+					//since we're at the top left of each square, we only want to check the next 3 indicies of the next 3 rows for a total of 9 cells
+					if(arr[x + row][y + col] === k) {
+						//if the 3x3 square already includes the target value k, then it is not part of the solution
+						return false;
+					}
+				}
+			}
+			//if contraints are satisfied then return true
+			return true;
+		}
+	</script>
+
+	<style>
+		button {
+		  font-size: 24px;
+		  margin-top: 20px;
+		}
+
+		input {
+		  height: 40px;
+		  width: 40px;
+		  font-size: 38px;
+		  text-align: center;
+		}
+	</style>
+</html>
