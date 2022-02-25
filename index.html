@@ -38,10 +38,10 @@
 
 		function start(arr) {
 			for(let i = 0; i < 9; i++) {
-		    	for(let j = 0; j < 9; j++) {
-		    		//pull the value from each of the html input elements provided by the user interface and build a 2-D array
-		      		arr[i][j] = document.getElementById(`${i}-${j}`).value;
-		    	}
+		    		for(let j = 0; j < 9; j++) {
+		    			//pull the value from each of the html input elements provided by the user interface and build a 2-D array
+		      			arr[i][j] = document.getElementById(`${i}-${j}`).value;
+		    		}
 		  	}
 		  	solve(arr);
 		}
